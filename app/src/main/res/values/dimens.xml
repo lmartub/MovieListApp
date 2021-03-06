@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Default screen margins -->
+    <dimen name="movie_title_padding">5dp</dimen>
+    <dimen name="movie_title">15dp</dimen>
+    <dimen name="movie_cover_height">160dp</dimen>
+    <dimen name="user_rating">12dp</dimen>
+
+    <dimen name="margin_loading">8dp</dimen>
+    <dimen name="padding_loading">8dp</dimen>
+</resources>

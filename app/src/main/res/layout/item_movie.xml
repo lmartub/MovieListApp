@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="8dp"
+    app:cardUseCompatPadding="true">
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/movie_cover_height"
+            android:id="@+id/itemMovieImage"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitXY" />
+
+        <TextView
+            android:id="@+id/itemMovieTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/itemMovieImage"
+            android:paddingLeft="@dimen/movie_title_padding"
+            android:paddingRight="@dimen/movie_title_padding"
+            android:paddingBottom="@dimen/movie_title_padding"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="@dimen/user_rating" />
+
+        <TextView
+            android:id="@+id/itemMovieDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/itemMovieTitle"
+            android:paddingLeft="@dimen/movie_title_padding"
+            android:paddingRight="@dimen/movie_title_padding"
+            android:paddingBottom="@dimen/movie_title_padding"
+            android:textColor="@color/black"
+            android:textSize="@dimen/user_rating"
+            android:maxLines="3"/>
+
+    </RelativeLayout>
+        
+
+</androidx.cardview.widget.CardView>
