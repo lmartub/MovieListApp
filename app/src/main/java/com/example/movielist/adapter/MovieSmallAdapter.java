@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,15 +12,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.movielist.Constant;
+import com.example.movielist.DetailMovieActivity;
 import com.example.movielist.Model.Movie;
 import com.example.movielist.R;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
-public class MovieSmallAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> { //RecyclerView.ViewHolder> {
+public class MovieSmallAdapter extends RecyclerView.Adapter<MovieSmallAdapter.MovieSmallHolder> { //RecyclerView.ViewHolder> {
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
 
@@ -33,7 +38,7 @@ public class MovieSmallAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
+    public MovieSmallAdapter.MovieSmallHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
         myContext = parent.getContext();
 
         if (viewType == VIEW_TYPE_ITEM) {
@@ -46,9 +51,9 @@ public class MovieSmallAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull MovieSmallAdapter.MovieSmallHolder viewHolder, int position) {
         if (viewHolder instanceof ItemViewHolder) {
-            ((ItemViewHolder) viewHolder).movieTitle.setText(mItemList.get(position).getOriginalTitle());
+            ((ItemViewHolder) viewHolder).movieTitle.setText(mItemList.get(position).getTitle());
             ((ItemViewHolder) viewHolder).movieDescription.setText(mItemList.get(position).getOverview());
             String poster = Constant.URL_IMAGE_LIST + mItemList.get(position).getPosterPath();
 
@@ -77,7 +82,7 @@ public class MovieSmallAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return mItemList.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
     }
 
-    private class ItemViewHolder extends RecyclerView.ViewHolder {
+    private class ItemViewHolder extends MovieSmallAdapter.MovieSmallHolder {
         ImageView movieImage;
         TextView movieTitle;
         TextView movieDescription;
@@ -91,7 +96,7 @@ public class MovieSmallAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    private class LoadingViewHolder extends RecyclerView.ViewHolder {
+    private class LoadingViewHolder extends MovieSmallAdapter.MovieSmallHolder {
         ProgressBar progressBar;
 
         public LoadingViewHolder(@NonNull View itemView) {
@@ -101,18 +106,31 @@ public class MovieSmallAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    private void showLoadingView (LoadingViewHolder viewHolder, int position){
-        // ProgressBar would be displayed
-    }
+    public class MovieSmallHolder extends RecyclerView.ViewHolder {
+        public TextView title, description;
+        public ImageView image;
 
-    private void populateItemRows (ItemViewHolder viewHolder, int position){
-        String itemImage = mItemList.get(position).getPosterPath();
-        String itemTitle = mItemList.get(position).getTitle();
-        String itemDescription = mItemList.get(position).getOverview();
+        public MovieSmallHolder(View view) {
+            super(view);
+            title = (TextView)view.findViewById(R.id.itemMovieTitle);
+            description = (TextView)view.findViewById(R.id.itemMovieDescription);
+            image=(ImageView)view.findViewById(R.id.itemMovieImage);
 
-        //viewHolder.movieImage.setImageURI();
-        viewHolder.movieTitle.setText(itemTitle);
-        viewHolder.movieDescription.setText(itemDescription);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    if (pos != RecyclerView.NO_POSITION){
+                        Movie clickedDataItem = mItemList.get(pos);
+                        Intent intent = new Intent(myContext, DetailMovieActivity.class);
+                        intent.putExtra("movies", clickedDataItem);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        myContext.startActivity(intent);
+                        Toast.makeText(v.getContext(), "You clicked " + clickedDataItem.getOriginalTitle(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
     }
 
 }

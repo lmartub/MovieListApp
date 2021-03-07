@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Películas más populares</string>
+    <string name="trailer">Sinopsis</string>
 </resources>
