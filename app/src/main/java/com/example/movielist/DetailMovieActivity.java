@@ -62,7 +62,6 @@ public class DetailMovieActivity extends AppCompatActivity {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-//            dateOfRelease = movie.getReleaseDate();
 
             String poster = Constant.URL_IMAGE_LIST + pictureMovie;
 

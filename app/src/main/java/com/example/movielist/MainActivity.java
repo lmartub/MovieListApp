@@ -128,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
 
             Retrofit retrofit = builder.build();
             ServiceMovie service = retrofit.create(ServiceMovie.class);
-            Log.i("Info", "Llamar al servicio...");
             // For API to create options, Add api_key, language and page, the last two are optionals.
             Map<String, String> options = new HashMap<String, String>();
             options.put("api_key", Constant.API_KEY);
@@ -162,7 +161,6 @@ public class MainActivity extends AppCompatActivity {
                     recyclerView.smoothScrollToPosition(movieListAll.size()-20);
                     movieAdapter.notifyDataSetChanged();
                     isLoading = false;
-                    Log.i("INFO", String.valueOf(movieList.size() + " = film number and total: " + String.valueOf(movieListAll.size())));
                 }
 
                 @Override
@@ -172,7 +170,6 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Error Fetching Data!", Toast.LENGTH_SHORT).show();
                 }
             });
-            Log.i("Info", "Fin de la ejecución del LoadJSON");
         }catch (Exception e) {
             Log.d("Error", e.getMessage());
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();

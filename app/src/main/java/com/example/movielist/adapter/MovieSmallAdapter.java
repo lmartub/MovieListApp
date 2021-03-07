@@ -24,7 +24,7 @@ import org.w3c.dom.Text;
 
 import java.util.List;
 
-public class MovieSmallAdapter extends RecyclerView.Adapter<MovieSmallAdapter.MovieSmallHolder> { //RecyclerView.ViewHolder> {
+public class MovieSmallAdapter extends RecyclerView.Adapter<MovieSmallAdapter.MovieSmallHolder> {
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
 
