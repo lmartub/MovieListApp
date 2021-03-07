@@ -1,8 +1,11 @@
 package com.example.movielist;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.movielist.Model.Movie;
@@ -50,10 +53,11 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private MovieSmallAdapter movieAdapter;
-    private List<Movie> movieList;
+    private List<Movie> movieListAll;
     private Integer page = 1;
 
     boolean isLoading = false;
+    private Integer positionScroll = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         modelActivity = new ModelActivity();
 
-
-//        initScrollListener();
+        initScrollListener();
     }
 
     public Activity getActivity(){
@@ -84,8 +87,8 @@ public class MainActivity extends AppCompatActivity {
     private void initViews() {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerViewList);
 
-        movieList = new ArrayList<>();
-        movieAdapter = new MovieSmallAdapter(movieList);
+        movieListAll = new ArrayList<>();
+        movieAdapter = new MovieSmallAdapter(movieListAll);
 
         if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
             recyclerView.setLayoutManager(new GridLayoutManager(this,2));
@@ -98,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         movieAdapter.notifyDataSetChanged();
 
         loadJSON();
+
     }
 
     private void loadJSON(){
@@ -139,11 +143,26 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Call<MoviesResponse> call, retrofit2.Response<MoviesResponse> response) {
                     List<Movie> movieList = response.body().getResults();
                     Collections.sort(movieList, Movie.BY_NAME_ALPHABETICAL);
-                    // Now load information in recyclerView...
-                    recyclerView.setAdapter(new MovieSmallAdapter(movieList));
-                    recyclerView.smoothScrollToPosition(0);
 
-                    Log.i("INFO", String.valueOf(movieList.size() + " = film number"));
+                    // Add more movies
+                    if (isLoading) {
+                        movieListAll.remove(movieListAll.size() - 1);
+                        movieAdapter.notifyItemRemoved(movieListAll.size());
+                    }
+
+                    for (int i = 0; i < movieList.size(); i++) {
+                        movieListAll.add(movieList.get(i));
+                    }
+                    // Now load information in recyclerView...
+                    if (!isLoading) {
+                        movieAdapter = new MovieSmallAdapter(movieListAll);
+                        recyclerView.setAdapter(movieAdapter);
+                    }
+
+                    recyclerView.smoothScrollToPosition(movieListAll.size()-20);
+                    movieAdapter.notifyDataSetChanged();
+                    isLoading = false;
+                    Log.i("INFO", String.valueOf(movieList.size() + " = film number and total: " + String.valueOf(movieListAll.size())));
                 }
 
                 @Override
@@ -164,7 +183,39 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
+    }
+
+    private void initScrollListener() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager linearLayoutManager = (LinearLayoutManager)recyclerView.getLayoutManager();
+                if (!isLoading) {
+                    if (linearLayoutManager != null &&
+                            linearLayoutManager.findLastCompletelyVisibleItemPosition() == movieListAll.size()-1) {
+                        // bottom of list!
+                        isLoading = true;
+                        loadMore();
+                    }
+                }
+            }
+        });
+    }
+
+    private void loadMore() {
+        page++;
+
+        movieListAll.add(null);
+        movieAdapter.notifyItemInserted(movieListAll.size()-1);
         loadJSON();
     }
+
 
 }
